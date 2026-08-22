@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- PWA / Fullscreen tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <title>VIT Bhopal - VTOP</title>
+    
+    <!-- Import Google Material Symbols (Official Android Icons) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <!-- Import Roboto Font (Official Android Font) -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Base Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            user-select: none; /* Prevents text highlighting to feel like a real app */
+        }
+
+        body, html {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: #000000;
+        }
+
+        /* Dark Mode Chrome Header */
+        .chrome-header {
+            display: flex;
+            align-items: center;
+            height: 56px;
+            background-color: #151515; /* Chrome Dark Mode Background */
+            padding: 0 8px;
+            color: #e3e3e3;
+            gap: 4px;
+        }
+
+        /* Material Icons Baseline Setup */
+        .material-symbols-outlined {
+            font-size: 24px;
+            padding: 8px;
+            cursor: pointer;
+            color: #e3e3e3;
+        }
+
+        /* The URL Bar (Rounded Pill) */
+        .url-bar {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            height: 40px;
+            background-color: #282a2d; /* Slightly lighter dark grey */
+            border-radius: 20px;
+            padding: 0 12px 0 4px;
+            margin-left: 4px;
+            margin-right: 4px;
+            overflow: hidden;
+        }
+
+        .url-bar .material-symbols-outlined {
+            font-size: 20px; /* The tune icon is slightly smaller */
+            padding: 8px;
+            color: #c4c7c5;
+        }
+
+        .url-text {
+            font-size: 16px;
+            color: #e3e3e3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: clip; /* Replicates the exact cut-off in your image */
+            flex-grow: 1;
+            letter-spacing: 0.2px;
+        }
+
+        /* Tab Counter Box ("22") */
+        .tab-wrapper {
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tab-count {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e3e3e3;
+            border-radius: 5px;
+            color: #e3e3e3;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* Main Iframe Container */
+        .iframe-container {
+            height: calc(100% - 56px);
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
+            background-color: #ffffff;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* Fullscreen Overlay Prompt */
+        .fullscreen-prompt {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #151515;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .fullscreen-prompt h2 {
+            font-weight: 400;
+            margin-bottom: 24px;
+        }
+
+        .fullscreen-prompt button {
+            padding: 12px 32px;
+            font-size: 16px;
+            font-weight: 500;
+            background: #8ab4f8; /* Google Blue */
+            color: #202124;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fullscreen Activation Screen -->
+    <div class="fullscreen-prompt" id="fsPrompt">
+        <h2>Launch Portal</h2>
+        <button onclick="enterFullscreen()">Tap to Start</button>
+    </div>
+
+    <!-- Fake Chrome Header -->
+    <div class="chrome-header">
+        <!-- Home Icon -->
+        <span class="material-symbols-outlined">home</span>
+        
+        <!-- URL Bar -->
+        <div class="url-bar">
+            <!-- Settings/Tune Icon -->
+            <span class="material-symbols-outlined">tune</span>
+            <!-- URL Text exactly as in 41912.jpg -->
+            <span class="url-text">vtop.vitbhopal.ac.in/v</span>
+        </div>
+
+        <!-- Plus Icon -->
+        <span class="material-symbols-outlined">add</span>
+
+        <!-- Tab Counter (22) -->
+        <div class="tab-wrapper">
+            <div class="tab-count">22</div>
+        </div>
+
+        <!-- Three Dot Menu -->
+        <span class="material-symbols-outlined">more_vert</span>
+    </div>
+
+    <!-- The Actual Webpage Content -->
+    <div class="iframe-container">
+        <!-- Change the src to your target file -->
+        <iframe src="vtop.html"></iframe>
+    </div>
+
+    <script>
+        // Trigger true fullscreen and hide the prompt
+        function enterFullscreen() {
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+            
+            // Hide overlay
+            document.getElementById('fsPrompt').style.display = 'none';
+        }
+
+        // Auto-hide prompt if opened as a PWA/Home Screen app
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+            document.getElementById('fsPrompt').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
