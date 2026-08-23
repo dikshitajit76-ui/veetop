@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <!-- PWA tags to make it look like a standalone app if added to homescreen, 
-         but allows the status bar to remain visible -->
+    <!-- PWA / Fullscreen tags -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <title>VIT Bhopal - VTOP</title>
     
@@ -24,7 +23,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
-            user-select: none; /* Prevents text highlighting */
+            user-select: none; /* Prevents text highlighting to feel like a real app */
         }
 
         body, html {
@@ -78,7 +77,7 @@
             color: #e3e3e3;
             white-space: nowrap;
             overflow: hidden;
-            text-overflow: clip; 
+            text-overflow: clip; /* Replicates the exact cut-off in your image */
             flex-grow: 1;
             letter-spacing: 0.2px;
         }
@@ -118,9 +117,44 @@
             border: none;
             display: block;
         }
+
+        /* Fullscreen Overlay Prompt */
+        .fullscreen-prompt {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #151515;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .fullscreen-prompt h2 {
+            font-weight: 400;
+            margin-bottom: 24px;
+        }
+
+        .fullscreen-prompt button {
+            padding: 12px 32px;
+            font-size: 16px;
+            font-weight: 500;
+            background: #8ab4f8; /* Google Blue */
+            color: #202124;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Fullscreen Activation Screen -->
+    <div class="fullscreen-prompt" id="fsPrompt">
+        <h2>Launch Portal</h2>
+        <button onclick="enterFullscreen()">Tap to Start</button>
+    </div>
 
     <!-- Fake Chrome Header -->
     <div class="chrome-header">
@@ -150,8 +184,29 @@
     <!-- The Actual Webpage Content -->
     <div class="iframe-container">
         <!-- Change the src to your target file -->
-        <iframe src="https://dikshitajit76-ui.github.io/vtopmain/"></iframe>
+        <iframe src="vtop.html"></iframe>
     </div>
 
+    <script>
+        // Trigger true fullscreen and hide the prompt
+        function enterFullscreen() {
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+            
+            // Hide overlay
+            document.getElementById('fsPrompt').style.display = 'none';
+        }
+
+        // Auto-hide prompt if opened as a PWA/Home Screen app
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+            document.getElementById('fsPrompt').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
