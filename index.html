@@ -4,22 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-    <!-- Connects the manifest file so Android treats it as an app -->
-    <link rel="manifest" href="manifest.json">
-
-    <!-- Colors the Android system status bar (battery/time) to match your fake header -->
     <meta name="theme-color" content="#151515">
-
-    <!-- PWA tags for iOS/Android standalone mode -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <title>VIT Bhopal - VTOP</title>
 
-    <!-- Import Google Material Symbols -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <!-- Import Roboto Font -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
@@ -38,19 +29,16 @@
             background-color: #000000;
         }
 
-        /* Dark Mode Chrome Header */
+        /* Dark Mode Chrome Header - Flush to top */
         .chrome-header {
             display: flex;
             align-items: center;
+            height: 56px;
             background-color: #151515; 
             color: #e3e3e3;
             gap: 4px;
-
-            /* Safe area padding for notches/cutouts */
-            padding-top: env(safe-area-inset-top, 0px);
-            padding-left: max(8px, env(safe-area-inset-left, 0px));
-            padding-right: max(8px, env(safe-area-inset-right, 0px));
-            height: calc(56px + env(safe-area-inset-top, 0px));
+            padding-left: 8px;
+            padding-right: 8px;
         }
 
         .material-symbols-outlined {
@@ -110,7 +98,7 @@
         }
 
         .iframe-container {
-            height: calc(100% - 56px - env(safe-area-inset-top, 0px));
+            height: calc(100% - 56px);
             width: 100%;
             -webkit-overflow-scrolling: touch;
             background-color: #ffffff;
@@ -122,9 +110,40 @@
             border: none;
             display: block;
         }
+
+        /* Fullscreen Overlay Prompt */
+        .fullscreen-prompt {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #151515;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            cursor: pointer;
+        }
+        
+        .fullscreen-prompt h2 {
+            font-weight: 400;
+            margin-bottom: 12px;
+        }
+
+        .fullscreen-prompt p {
+            color: #8ab4f8;
+            font-size: 16px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Tap Anywhere Overlay -->
+    <div class="fullscreen-prompt" id="fsPrompt" onclick="goFullscreen()">
+        <h2>Portal Ready</h2>
+        <p>Tap anywhere to launch</p>
+    </div>
 
     <!-- Fake Chrome Header -->
     <div class="chrome-header">
@@ -142,9 +161,26 @@
 
     <!-- The Actual Webpage Content -->
     <div class="iframe-container">
-        <!-- Make sure to use the exact path to your local file if hosted locally -->
         <iframe src="https://dikshitajit76-ui.github.io/vtopmain/"></iframe>
     </div>
 
+    <!-- JavaScript Fullscreen Function -->
+    <script>
+        function goFullscreen() {
+            let elem = document.documentElement;
+            
+            // Request system fullscreen
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+
+            // Hide the prompt and reveal the fake browser
+            document.getElementById('fsPrompt').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
